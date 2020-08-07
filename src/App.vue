@@ -1,9 +1,19 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
     <router-view />
   </div>
 </template>
+
+<style lang="scss" scoped>
+@font-face {
+  font-family: "Gloria Hallelujah";
+  src: url("assets/GloriaHallelujah-Regular.ttf") format("truetype");
+}
+
+#app {
+  font-family: "Gloria Hallelujah", cursive;
+  font-size: xx-large;
+  display: grid;
+  place-items: center;
+}
+</style>
