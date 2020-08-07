@@ -1,16 +1,16 @@
 <template>
-  <div class="home">
-    <div>COUNTDOWN</div>
+  <div class="letters">
+    <div>LETTERS</div>
     <div />
     <div>
       <div class="choice">
         <wired-button elevation="2" @click="$router.push('letters')">
-          <div class="label">LETTERS</div>
+          <div class="label">VOWEL</div>
         </wired-button>
       </div>
       <div class="choice">
         <wired-button elevation="2" @click="$router.push('numbers')">
-          <div class="label">NUMBERS</div>
+          <div class="label">CONSONANT</div>
         </wired-button>
       </div>
     </div>
@@ -20,10 +20,18 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import "wired-elements";
+import { start } from "../client";
 
 @Component
-export default class Home extends Vue {}
+export default class Letters extends Vue {
+  async mounted() {
+    const response = await start("letters");
+
+    const json = await response.json();
+
+    console.log(JSON.stringify(json));
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -32,7 +40,7 @@ export default class Home extends Vue {}
   place-items: center;
 }
 
-.home {
+.letters {
   @include center;
   height: 90vh;
 }
