@@ -1,15 +1,17 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { start, letters, submit } from "../client";
 
 Vue.use(Vuex);
 
 interface State {
-  letters: LetterInfo[]
-  word: LetterInfo[]
+  round: string;
+  letters: LetterInfo[];
+  word: LetterInfo[];
 }
 
 export interface LetterInfo {
-  letter: string,
+  letter: 'letters' | 'numbers',
   type: 'consonant' | 'vowel',
   used: boolean,
   index: number
@@ -17,6 +19,7 @@ export interface LetterInfo {
 
 export default new Vuex.Store({
   state: {
+    round: '',
     letters: [],
     word: []
   } as State,
@@ -54,20 +57,37 @@ export default new Vuex.Store({
         state.word = state.word.slice(0, len)
         state.letters[info.index].used = false
       }
+    },
+    setRound(state, round: 'letters' | 'numbers') {
+      state.round = round;
     }
   },
   actions: {
-    addLetter(context, args) {
-      context.commit('addLetter', args)
+    async getLetter(context, type) {
+      const response = await letters(type);
+
+      const { letter } = await response.json();
+
+      context.commit('addLetter', { letter, type })
     },
-    clearLetters(context) {
+    async startLetters(context) {
       context.commit('clearLetters');
+      context.commit('setRound', 'letters');
+
+      await start("letters");
     },
     type(context, info: LetterInfo) {
-      context.commit('type', info)
+      context.commit('type', info);
     },
     backspace(context) {
-      context.commit('backspace')
+      context.commit('backspace');
+    },
+    async submit(context) {
+      if (context.state.round === 'letters') {
+        const answer = context.getters.word;
+        const response = await submit(answer);
+        const json = await response.json();
+      }
     }
   },
   modules: {}

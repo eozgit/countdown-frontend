@@ -45,7 +45,6 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { start, letters } from "../client";
 
 @Component
 export default class Letters extends Vue {
@@ -53,9 +52,7 @@ export default class Letters extends Vue {
   left = 60;
 
   async mounted() {
-    this.$store.dispatch("clearLetters");
-
-    await start("letters");
+    this.$store.dispatch("startLetters");
 
     this.interval = setInterval(() => {
       this.left--;
@@ -66,11 +63,7 @@ export default class Letters extends Vue {
   }
 
   async get(type: string) {
-    const response = await letters(type);
-
-    const { letter } = await response.json();
-
-    this.$store.dispatch("addLetter", { letter, type });
+    this.$store.dispatch("getLetter", type);
   }
 
   get letters() {
