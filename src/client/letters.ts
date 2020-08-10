@@ -1,7 +1,7 @@
 import host from './host'
 
-export default (round: string) => {
-    return fetch(host + '/start', {
+export default (type: string) => {
+    return fetch(host + '/letters', {
         method: 'POST',
         mode: 'cors',
         credentials: "include",
@@ -9,7 +9,7 @@ export default (round: string) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            round
+            type
         })
     })
 }
