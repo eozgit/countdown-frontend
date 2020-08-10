@@ -8,6 +8,15 @@ interface State {
   round: string;
   letters: LetterInfo[];
   word: LetterInfo[];
+  lettersResult: LettersResult | null;
+}
+
+interface LettersResult {
+  answer1: string,
+  defn1: string,
+  answer2: string,
+  defn2: string,
+  won: boolean
 }
 
 export interface LetterInfo {
@@ -21,7 +30,9 @@ export default new Vuex.Store({
   state: {
     round: '',
     letters: [],
-    word: []
+    word: [],
+    lettersResult: null
+
   } as State,
   getters: {
     letters: state => state.letters,
@@ -29,7 +40,8 @@ export default new Vuex.Store({
     vowels: (_, getters) => getters.letters.filter((l: LetterInfo) => l.type === 'vowel').length,
     total: (_, getters) => getters.vowels + getters.consonants,
     ready: (_, getters) => getters.total == 9,
-    word: state => state.word.map(w => w.letter.toUpperCase()).join('')
+    word: state => state.word.map(w => w.letter.toUpperCase()).join(''),
+    lettersResult: state => state.lettersResult
   },
   mutations: {
     addLetter(state, { letter, type }) {
@@ -44,7 +56,8 @@ export default new Vuex.Store({
     },
     clearLetters(state) {
       state.letters = [];
-      state.word = []
+      state.word = [];
+      state.lettersResult = null
     },
     type(state, info: LetterInfo) {
       state.word.push(info)
@@ -60,6 +73,9 @@ export default new Vuex.Store({
     },
     setRound(state, round: 'letters' | 'numbers') {
       state.round = round;
+    },
+    setLettersResult(state, result: LettersResult) {
+      state.lettersResult = result
     }
   },
   actions: {
@@ -84,9 +100,10 @@ export default new Vuex.Store({
     },
     async submit(context) {
       if (context.state.round === 'letters') {
-        const answer = context.getters.word;
+        const answer = context.getters.word.toLowerCase();
         const response = await submit(answer);
-        const json = await response.json();
+        const json = await response.json() as LettersResult;
+        context.commit('setLettersResult', json);
       }
     }
   },

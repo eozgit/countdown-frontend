@@ -34,11 +34,26 @@
         </wired-button>
       </div>
       <div class="choice" v-if="ready">
-        <wired-button elevation="2" @click="submit()">
+        <wired-button elevation="2" @click="submit()" :disabled="!canSubmit">
           <div class="label">SUBMIT</div>
         </wired-button>
       </div>
     </div>
+    <wired-dialog :open="result" v-if="result">
+      <p v-if="result.won">YOU WON!</p>
+      <p v-else>BOT WON</p>
+      <div v-if="result.defn1" class="small">
+        <strong>{{ result.answer1 }}:</strong>
+        {{ result.defn1 }}
+      </div>
+      <div v-if="result.defn2" class="small">
+        <strong>{{ result.answer2 }}:</strong>
+        {{ result.defn2 }}
+      </div>
+      <div style="text-align: right; padding: 30px 16px 16px;">
+        <wired-button @click="$router.push('/')">PLAY AGAIN</wired-button>
+      </div>
+    </wired-dialog>
   </div>
 </template>
 
@@ -90,6 +105,14 @@ export default class Letters extends Vue {
     return this.$store.getters.word;
   }
 
+  get canSubmit() {
+    return this.word.length > 0 && !this.result;
+  }
+
+  get result() {
+    return this.$store.getters.lettersResult;
+  }
+
   type(info: any) {
     if (!info.used) {
       this.$store.dispatch("type", info);
@@ -101,7 +124,9 @@ export default class Letters extends Vue {
   }
 
   submit() {
-    this.$store.dispatch("submit");
+    if (this.canSubmit) {
+      this.$store.dispatch("submit");
+    }
   }
 }
 </script>
@@ -145,5 +170,9 @@ export default class Letters extends Vue {
 
 .letters-list {
   max-width: 13rem;
+}
+
+.small {
+  font-size: x-small;
 }
 </style>
