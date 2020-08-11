@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { start, letters, numbers, submit } from "../client";
+import calculateNumbers from "../common/calculateNumbers";
 
 Vue.use(Vuex);
 
@@ -9,9 +10,10 @@ interface State {
   letters: LetterInfo[];
   word: LetterInfo[];
   lettersResult: LettersResult | null;
+  originalNumbers: number[];
   numbers: NumberInfo[];
   numbersResult: NumbersResult | null;
-  ops: (string | number)[];
+  ops: number[];
 }
 
 interface LettersResult {
@@ -45,6 +47,7 @@ export default new Vuex.Store({
     letters: [],
     word: [],
     lettersResult: null,
+    originalNumbers: [],
     numbers: [],
     numbersResult: null,
     ops: []
@@ -58,7 +61,8 @@ export default new Vuex.Store({
     word: state => state.word.map(w => w.letter.toUpperCase()).join(''),
     lettersResult: state => state.lettersResult,
     numbers: state => state.numbers,
-    ops: state => state.ops
+    ops: state => state.ops,
+    originalNumbers: state => state.originalNumbers
   },
   mutations: {
     addLetter(state, { letter, type }) {
@@ -94,20 +98,19 @@ export default new Vuex.Store({
     setLettersResult(state, result: LettersResult) {
       state.lettersResult = result
     },
-    setNumbers(state, numbers) {
-      state.numbers = numbers.map((number: number, index: number) => ({ number, index, used: false }));
+    setOriginalNumbers(state, numbers) {
+      state.originalNumbers = numbers;
     },
     clearNumbers(state) {
       state.numbers = [];
       state.numbersResult = null;
       state.ops = []
     },
-    addNumber(state, numberInfo: NumberInfo) {
-      state.ops.push(numberInfo.number);
-      state.numbers[numberInfo.index].used = true;
-    },
-    addOperation(state, op: string) {
+    append(state, op: number) {
       state.ops.push(op);
+    },
+    setNumbers(state, numbers: NumberInfo[]) {
+      state.numbers = numbers;
     }
   },
   actions: {
@@ -149,13 +152,20 @@ export default new Vuex.Store({
 
       const json = await response.json();
 
-      context.commit('setNumbers', json.numbers);
+      context.commit('setOriginalNumbers', json.numbers);
+
+      const nos: NumberInfo[] = calculateNumbers(
+        context.getters.originalNumbers,
+        context.getters.ops
+      );
+
+      context.commit('setNumbers', nos)
     },
-    addNumber(context, numberInfo: NumberInfo) {
-      context.commit('addNumber', numberInfo);
+    append(context, op: number) {
+      context.commit('append', op);
     },
-    addOperation(context, op: string) {
-      context.commit('addOperation', op);
+    setNumbers(context, numbers) {
+      context.commit('setNumbers', numbers)
     }
   },
   modules: {}

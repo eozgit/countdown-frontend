@@ -26,18 +26,35 @@
           <div class="number-label">{{ i.number }}</div>
         </wired-button>
       </div>
-      <div v-if="ready">
-        <div class="numbers-list">
-          <wired-button
-            v-for="o in ['+', '-', '*', '/']"
-            :key="o"
-            class="number-button"
-            @click="addOperation(o)"
-            :disabled="!ready || nextIsOperand"
-          >
-            <div class="number-label">{{ o }}</div>
-          </wired-button>
-        </div>
+      <div v-if="ready" class="numbers-list">
+        <wired-button
+          class="number-button"
+          @click="addOperation(-1)"
+          :disabled="!ready || nextIsOperand"
+        >
+          <div class="number-label">+</div>
+        </wired-button>
+        <wired-button
+          class="number-button"
+          @click="addOperation(-2)"
+          :disabled="!ready || nextIsOperand"
+        >
+          <div class="number-label">-</div>
+        </wired-button>
+        <wired-button
+          class="number-button"
+          @click="addOperation(-3)"
+          :disabled="!ready || nextIsOperand"
+        >
+          <div class="number-label">*</div>
+        </wired-button>
+        <wired-button
+          class="number-button"
+          @click="addOperation(-4)"
+          :disabled="!ready || nextIsOperand"
+        >
+          <div class="number-label">/</div>
+        </wired-button>
       </div>
       <div class="choice" v-if="ready">
         <wired-button elevation="2" @click="backspace()">
@@ -50,16 +67,16 @@
         </wired-button>
       </div>
     </div>
-    <wired-dialog :open="numbersResult" v-if="numbersResult">
-      <p v-if="numbersResult.won">YOU WON!</p>
+    <wired-dialog :open="result" v-if="result">
+      <p v-if="result.won">YOU WON!</p>
       <p v-else>BOT WON</p>
-      <div v-if="numbersResult.defn1" class="small">
-        <strong>{{ numbersResult.answer1 }}:</strong>
-        {{ numbersResult.defn1 }}
+      <div v-if="result.defn1" class="small">
+        <strong>{{ result.answer1 }}:</strong>
+        {{ result.defn1 }}
       </div>
-      <div v-if="numbersResult.defn2" class="small">
-        <strong>{{ numbersResult.answer2 }}:</strong>
-        {{ numbersResult.defn2 }}
+      <div v-if="result.defn2" class="small">
+        <strong>{{ result.answer2 }}:</strong>
+        {{ result.defn2 }}
       </div>
       <div style="text-align: right; padding: 30px 16px 16px;">
         <wired-button @click="$router.push('/')">PLAY AGAIN</wired-button>
@@ -71,6 +88,8 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import { NumberInfo } from "../store";
+import calculateNumbers from "../common/calculateNumbers";
 
 @Component
 export default class Numbers extends Vue {
@@ -112,37 +131,46 @@ export default class Numbers extends Vue {
     return this.$store.getters.ops;
   }
 
-  /**
-   * ops field holds the math operations by the user, for instance
-   * 3 + 5 = 8  8 * 7 = 56  is stored as
-   * [ 3, '+', 5, 8, '*', 7 ]
-   * This getter tells if the next input should be an operand
-   * as opposed to an operator following this convention
-   */
   get nextIsOperand() {
     if (this.ops.length === 0) {
       return true;
     } else if (this.ops.length === 1) {
       return false;
-    } else if (typeof this.ops[this.ops.length - 1] === "string") {
+    } else if (this.ops[this.ops.length - 1] < 0) {
       return true;
-    } else if (typeof this.ops[this.ops.length - 2] === "string") {
+    } else if (this.ops[this.ops.length - 2] < 0) {
       return true;
     } else {
       return false;
     }
   }
 
+  get originalNumbers() {
+    return this.$store.getters.originalNumbers;
+  }
+
   addNumber(numberInfo: any) {
     if (this.nextIsOperand && !numberInfo.used) {
-      this.$store.dispatch("addNumber", numberInfo);
+      this.$store.dispatch("append", numberInfo.index);
+
+      this.setNumbers();
     }
   }
 
-  addOperation(op: string) {
+  addOperation(op: number) {
     if (!this.nextIsOperand) {
-      this.$store.dispatch("addOperation", op);
+      this.$store.dispatch("append", op);
+      this.setNumbers();
     }
+  }
+
+  setNumbers() {
+    const numbers: NumberInfo[] = calculateNumbers(
+      this.originalNumbers,
+      this.ops
+    );
+
+    this.$store.dispatch("setNumbers", numbers);
   }
 
   backspace() {
