@@ -13,14 +13,12 @@ const routes: Array<RouteConfig> = [
   {
     path: "/letters",
     name: "Letters",
-    component: () =>
-      import("../views/Letters.vue")
+    component: () => import("../views/Letters.vue")
   },
   {
     path: "/numbers",
     name: "Numbers",
-    component: () =>
-      import("../views/Numbers.vue")
+    component: () => import("../views/Numbers.vue")
   }
 ];
 

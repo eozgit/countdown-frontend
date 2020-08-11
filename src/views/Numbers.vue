@@ -14,7 +14,10 @@
           </wired-button>
         </div>
       </div>
-      <div>{{JSON.stringify(ops)}}</div>
+      <div v-if="ready" class="center medium">Target: {{ target }}</div>
+      <div v-if="ready" class="center medium">
+        Away: {{ away === null ? "-" : away }}
+      </div>
       <div class="numbers-list">
         <wired-button
           v-for="i in numbers"
@@ -57,12 +60,12 @@
         </wired-button>
       </div>
       <div class="choice" v-if="ready">
-        <wired-button elevation="2" @click="backspace()">
-          <div class="label">BACKSPACE</div>
+        <wired-button elevation="2" @click="backspace" :disabled="!ops.length">
+          <div class="label">UNDO</div>
         </wired-button>
       </div>
       <div class="choice" v-if="ready">
-        <wired-button elevation="2" @click="submit()" :disabled="!canSubmit">
+        <wired-button elevation="2" @click="submit" :disabled="!canSubmit">
           <div class="label">SUBMIT</div>
         </wired-button>
       </div>
@@ -120,7 +123,7 @@ export default class Numbers extends Vue {
   }
 
   get canSubmit() {
-    return false;
+    return this.away !== null && this.away < 10;
   }
 
   get result() {
@@ -129,6 +132,14 @@ export default class Numbers extends Vue {
 
   get ops() {
     return this.$store.getters.ops;
+  }
+
+  get target() {
+    return this.$store.getters.target;
+  }
+
+  get away() {
+    return this.$store.getters.away;
   }
 
   get nextIsOperand() {
@@ -174,7 +185,9 @@ export default class Numbers extends Vue {
   }
 
   backspace() {
-    this.$store.dispatch("backspace");
+    if (this.ops.length) {
+      this.$store.dispatch("backspace");
+    }
   }
 
   submit() {
@@ -189,6 +202,10 @@ export default class Numbers extends Vue {
 @mixin center {
   display: grid;
   place-items: center;
+}
+
+.center {
+  @include center;
 }
 
 .numbers {
