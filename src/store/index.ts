@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { start, letters, submit } from "../client";
+import { start, letters, numbers, submit } from "../client";
 
 Vue.use(Vuex);
 
@@ -9,6 +9,9 @@ interface State {
   letters: LetterInfo[];
   word: LetterInfo[];
   lettersResult: LettersResult | null;
+  numbers: NumberInfo[];
+  numbersResult: NumbersResult | null;
+  ops: (string | number)[];
 }
 
 interface LettersResult {
@@ -19,9 +22,19 @@ interface LettersResult {
   won: boolean
 }
 
+interface NumbersResult {
+  won: boolean
+}
+
 export interface LetterInfo {
-  letter: 'letters' | 'numbers',
+  letter: string,
   type: 'consonant' | 'vowel',
+  used: boolean,
+  index: number
+}
+
+export interface NumberInfo {
+  number: number,
   used: boolean,
   index: number
 }
@@ -31,8 +44,10 @@ export default new Vuex.Store({
     round: '',
     letters: [],
     word: [],
-    lettersResult: null
-
+    lettersResult: null,
+    numbers: [],
+    numbersResult: null,
+    ops: []
   } as State,
   getters: {
     letters: state => state.letters,
@@ -41,7 +56,9 @@ export default new Vuex.Store({
     total: (_, getters) => getters.vowels + getters.consonants,
     ready: (_, getters) => getters.total == 9,
     word: state => state.word.map(w => w.letter.toUpperCase()).join(''),
-    lettersResult: state => state.lettersResult
+    lettersResult: state => state.lettersResult,
+    numbers: state => state.numbers,
+    ops: state => state.ops
   },
   mutations: {
     addLetter(state, { letter, type }) {
@@ -76,6 +93,21 @@ export default new Vuex.Store({
     },
     setLettersResult(state, result: LettersResult) {
       state.lettersResult = result
+    },
+    setNumbers(state, numbers) {
+      state.numbers = numbers.map((number: number, index: number) => ({ number, index, used: false }));
+    },
+    clearNumbers(state) {
+      state.numbers = [];
+      state.numbersResult = null;
+      state.ops = []
+    },
+    addNumber(state, numberInfo: NumberInfo) {
+      state.ops.push(numberInfo.number);
+      state.numbers[numberInfo.index].used = true;
+    },
+    addOperation(state, op: string) {
+      state.ops.push(op);
     }
   },
   actions: {
@@ -105,6 +137,25 @@ export default new Vuex.Store({
         const json = await response.json() as LettersResult;
         context.commit('setLettersResult', json);
       }
+    },
+    async startNumbers(context) {
+      context.commit('clearNumbers');
+      context.commit('setRound', 'numbers');
+
+      await start("numbers");
+    },
+    async getNumbers(context, count) {
+      const response = await numbers(count);
+
+      const json = await response.json();
+
+      context.commit('setNumbers', json.numbers);
+    },
+    addNumber(context, numberInfo: NumberInfo) {
+      context.commit('addNumber', numberInfo);
+    },
+    addOperation(context, op: string) {
+      context.commit('addOperation', op);
     }
   },
   modules: {}
