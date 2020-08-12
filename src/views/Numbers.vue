@@ -7,17 +7,15 @@
     <div />
     <div>
       <div v-if="!ready">
-        <div class="choice medium">HOW MANY LARGE NUMBERS?</div>
+        <div class="choice small">HOW MANY LARGE NUMBERS?</div>
         <div v-for="n in [1, 2, 3, 4]" :key="n" class="choice">
           <wired-button elevation="2" @click="getNumbers(n)">
             <div class="label">{{ n }}</div>
           </wired-button>
         </div>
       </div>
-      <div v-if="ready" class="center medium">Target: {{ target }}</div>
-      <div v-if="ready" class="center medium">
-        Away: {{ away === null ? "-" : away }}
-      </div>
+      <div v-if="ready" class="center small">Target: {{ target }}</div>
+      <div v-if="ready" class="center small">Away: {{ away === null ? "-" : away }}</div>
       <div class="numbers-list">
         <wired-button
           v-for="i in numbers"
@@ -73,13 +71,19 @@
     <wired-dialog :open="result" v-if="result">
       <p v-if="result.won">YOU WON!</p>
       <p v-else>BOT WON</p>
-      <div v-if="result.defn1" class="small">
-        <strong>{{ result.answer1 }}:</strong>
-        {{ result.defn1 }}
+      <div class="small">
+        <div>
+          <strong>YOU</strong>
+        </div>
+        <div>Away: {{ result.away1 }}</div>
+        <div>{{ result.answer1 }}</div>
       </div>
-      <div v-if="result.defn2" class="small">
-        <strong>{{ result.answer2 }}:</strong>
-        {{ result.defn2 }}
+      <div class="small">
+        <div>
+          <strong>BOT</strong>
+        </div>
+        <div>Away: {{ result.away2 }}</div>
+        <div v-for="(step, i) in result.answer2.split(',')" :key="i">{{ step }}</div>
       </div>
       <div style="text-align: right; padding: 30px 16px 16px;">
         <wired-button @click="$router.push('/')">PLAY AGAIN</wired-button>
@@ -244,10 +248,6 @@ export default class Numbers extends Vue {
 }
 
 .small {
-  font-size: x-small;
-}
-
-.medium {
   font-size: small;
 }
 </style>

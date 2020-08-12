@@ -43,10 +43,16 @@
       <p v-if="result.won">YOU WON!</p>
       <p v-else>BOT WON</p>
       <div v-if="result.defn1" class="small">
+        <div>
+          <strong>YOU</strong>
+        </div>
         <strong>{{ result.answer1 }}:</strong>
         {{ result.defn1 }}
       </div>
       <div v-if="result.defn2" class="small">
+        <div>
+          <strong>BOT</strong>
+        </div>
         <strong>{{ result.answer2 }}:</strong>
         {{ result.defn2 }}
       </div>
@@ -173,6 +179,6 @@ export default class Letters extends Vue {
 }
 
 .small {
-  font-size: x-small;
+  font-size: small;
 }
 </style>

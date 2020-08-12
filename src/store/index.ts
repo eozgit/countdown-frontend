@@ -26,6 +26,10 @@ interface LettersResult {
 }
 
 interface NumbersResult {
+  answer1: string;
+  away1: string;
+  answer2: string;
+  away2: string;
   won: boolean;
 }
 
@@ -71,9 +75,10 @@ export default new Vuex.Store({
     away: (_, getters) =>
       getters.numbers.length > 6
         ? Math.abs(
-            getters.numbers[getters.numbers.length - 1].number - getters.target
-          )
-        : null
+          getters.numbers[getters.numbers.length - 1].number - getters.target
+        )
+        : null,
+    numbersResult: state => state.numbersResult
   },
   mutations: {
     addLetter(state, { letter, type }) {
@@ -131,6 +136,9 @@ export default new Vuex.Store({
     },
     setTarget(state, target: number) {
       state.target = target;
+    },
+    setNumbersResult(state, result: NumbersResult) {
+      state.numbersResult = result;
     }
   },
   actions: {
@@ -168,6 +176,8 @@ export default new Vuex.Store({
           context.state.ops
         );
         const response = await submit(infix);
+        const json = (await response.json()) as NumbersResult;
+        context.commit("setNumbersResult", json);
       }
     },
     async startNumbers(context) {
