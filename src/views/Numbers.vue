@@ -89,6 +89,9 @@
         <wired-button @click="$router.push('/')">PLAY AGAIN</wired-button>
       </div>
     </wired-dialog>
+    <wired-fab class="float" @click="$router.push('/')" id="i1">
+      <span class="home">🏠</span>
+    </wired-fab>
   </div>
 </template>
 
@@ -256,5 +259,18 @@ export default class Numbers extends Vue {
   background-image: linear-gradient(Gainsboro 1px, transparent 1px),
     linear-gradient(to right, Gainsboro 1px, transparent 1px);
   background-size: 35px 35px;
+}
+
+.float {
+  position: absolute;
+  top: 35%;
+  right: 10%;
+}
+
+.home {
+  z-index: 1;
+  position: relative;
+  bottom: 0.6rem;
+  left: 0.2rem;
 }
 </style>
