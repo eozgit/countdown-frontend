@@ -19,12 +19,12 @@
         </wired-button>
       </div>
       <div class="choice" v-if="!ready">
-        <wired-button elevation="2" @click="get('vowel')">
+        <wired-button elevation="2" @click="get('vowel')" :disabled="!canGetVowel">
           <div class="label">VOWEL</div>
         </wired-button>
       </div>
       <div class="choice" v-if="!ready">
-        <wired-button elevation="2" @click="get('consonant')">
+        <wired-button elevation="2" @click="get('consonant')" :disabled="!canGetConsonant">
           <div class="label">CONSONANT</div>
         </wired-button>
       </div>
@@ -83,8 +83,14 @@ export default class Letters extends Vue {
     }, 1000);
   }
 
-  async get(type: string) {
-    this.$store.dispatch("getLetter", type);
+  async get(type: "consonant" | "vowel") {
+    const isConsonant = type === "consonant";
+    if (
+      (isConsonant && this.canGetConsonant) ||
+      (!isConsonant && this.canGetVowel)
+    ) {
+      this.$store.dispatch("getLetter", type);
+    }
   }
 
   get letters() {
@@ -97,6 +103,14 @@ export default class Letters extends Vue {
 
   get consonants() {
     return this.$store.getters.consonants;
+  }
+
+  get canGetVowel() {
+    return Math.max(4 - this.consonants, 0) < 9 - this.letters.length;
+  }
+
+  get canGetConsonant() {
+    return Math.max(3 - this.vowels, 0) < 9 - this.letters.length;
   }
 
   get total() {

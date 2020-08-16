@@ -145,9 +145,11 @@ export default new Vuex.Store({
     async getLetter(context, type) {
       const response = await letters(type);
 
-      const { letter } = await response.json();
+      if (response.ok) {
+        const { letter } = await response.json();
 
-      context.commit("addLetter", { letter, type });
+        context.commit("addLetter", { letter, type });
+      }
     },
     async startLetters(context) {
       context.commit("clearLetters");
