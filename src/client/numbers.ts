@@ -1,7 +1,8 @@
-import host from "./host";
+import { getApiUrl } from '@/common';
 
 export default (count: number) => {
-  return fetch(host + "/numbers", {
+  const url = getApiUrl("/numbers");
+  return fetch(url, {
     method: "POST",
     mode: "cors",
     credentials: "include",

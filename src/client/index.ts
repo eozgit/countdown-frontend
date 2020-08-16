@@ -1,3 +1,4 @@
+export { default as host } from "./host";
 export { default as start } from "./start";
 export { default as letters } from "./letters";
 export { default as numbers } from "./numbers";

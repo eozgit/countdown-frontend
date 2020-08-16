@@ -1,34 +1,26 @@
-# countdown-frontend
+### Countdown: Letters & Numbers
 
-## Project setup
-```
-yarn install
-```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+[Video](https://youtu.be/Bc0HKT3ybjA)
 
-### Compiles and minifies for production
-```
-yarn build
-```
 
-### Run your unit tests
-```
-yarn test:unit
-```
+[Backend Code](https://github.com/eozgit/countdown-backend)
 
-### Run your end-to-end tests
-```
-yarn test:e2e
-```
 
-### Lints and fixes files
-```
-yarn lint
-```
+###### Stack
+-   Python
+-   Flask
+-   RestX aka RestPlus
+-   Vue
+-   Vuex
+-   TypeScript
+-   Docker
+-   AWS Fargate
+-   Amazon ECS
+-   Amazon ECR
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+###### Features
+-   Oxford Dictionary definitions and stemmer APIs integration
+-   Anagrams API integration
+-   Depth-first-search numbers round solver algorithm
