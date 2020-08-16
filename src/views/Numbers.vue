@@ -130,7 +130,7 @@ export default class Numbers extends Vue {
   }
 
   get canSubmit() {
-    return this.away !== null && this.away < 10;
+    return this.away !== null && this.away < 10 && this.left > 0;
   }
 
   get result() {

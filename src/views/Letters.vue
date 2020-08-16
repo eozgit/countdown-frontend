@@ -129,7 +129,7 @@ export default class Letters extends Vue {
   }
 
   get canSubmit() {
-    return this.word.length > 0 && !this.result;
+    return this.word.length > 0 && !this.result && this.left > 0;
   }
 
   get result() {
