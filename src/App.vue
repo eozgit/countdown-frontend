@@ -15,5 +15,6 @@
   font-size: xx-large;
   display: grid;
   place-items: center;
+  height: 100%;
 }
 </style>

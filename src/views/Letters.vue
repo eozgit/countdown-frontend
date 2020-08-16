@@ -1,5 +1,5 @@
 <template>
-  <div class="letters">
+  <div class="letters lines">
     <div>LETTERS</div>
     <div class="timer">
       <wired-progress :value="left" max="60" class="progress"></wired-progress>
@@ -159,7 +159,8 @@ export default class Letters extends Vue {
 
 .letters {
   @include center;
-  height: 90vh;
+  height: 100%;
+  width: 100%;
 }
 
 .label {
@@ -194,5 +195,10 @@ export default class Letters extends Vue {
 
 .small {
   font-size: small;
+}
+
+.lines {
+  background-image: repeating-linear-gradient(0deg, lightsteelblue, lightsteelblue 1px, transparent 1px, transparent);
+  background-size: 35px 35px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="numbers">
+  <div class="numbers grid">
     <div>NUMBERS</div>
     <div class="timer">
       <wired-progress :value="left" max="60" class="progress"></wired-progress>
@@ -214,7 +214,8 @@ export default class Numbers extends Vue {
 
 .numbers {
   @include center;
-  height: 90vh;
+  height: 100%;
+  width: 100%;
 }
 
 .label {
@@ -249,5 +250,11 @@ export default class Numbers extends Vue {
 
 .small {
   font-size: small;
+}
+
+.grid {
+  background-image: linear-gradient(Gainsboro 1px, transparent 1px),
+    linear-gradient(to right, Gainsboro 1px, transparent 1px);
+  background-size: 35px 35px;
 }
 </style>
