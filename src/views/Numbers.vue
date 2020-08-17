@@ -263,7 +263,7 @@ export default class Numbers extends Vue {
 
 .float {
   position: absolute;
-  top: 35%;
+  top: 28%;
   right: 10%;
 }
 
